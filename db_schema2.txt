@@ -1,0 +1,33 @@
+create table `kyc_status` (
+	`user_id` varchar (768),
+	`status` varchar (768),
+	`send_status` varchar (768),
+	`processing_status` varchar (768)
+); 
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('35462','PENDING','no','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('35460','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('43517','ACCEPTED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('44776','ACCEPTED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('40351','ACCEPTED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('35380','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('35522','PENDING','no','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('39104','ACCEPTED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('36723','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('38962','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('44171','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('41815','ACCEPTED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('36522','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('36754','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('36711','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('38911','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('40385','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('44785','ACCEPTED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('36435','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('41006','ACCEPTED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('40005','ACCEPTED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('40581','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('35917','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('38300','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('39619','ACCEPTED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('39976','CLEARED','yes','yes');
+insert into `kyc_status` (`user_id`, `status`, `send_status`, `processing_status`) values('43845','ACCEPTED','yes','yes');
