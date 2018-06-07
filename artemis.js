@@ -285,10 +285,10 @@ function artemisSubmit(entity)
 	
 }
 
-updateDatabaseSuccess(entity)
+function updateDatabaseSuccess(entity)
 {
 	var connection = createSQL();
-	connection.query("UPDATE kyc SET status = 'Pending' where user_id = '".concat(entity.user_id).concat("'",function(error,response,body)
+	connection.query("UPDATE kyc SET status = 'Pending' where user_id = '".concat(entity.user_id).concat("'"),function(error,response,body)
 	{
 		connection.end();
 		console.log(response);
@@ -308,10 +308,12 @@ function querySix(entity)
 		connection.end();
 		if(error)throw error;
 		
-		if(result.length >0) //found
+		if(results.length >0) //found
 		{
-			entity.img_front = "kyc/images/new_customer/".concat(results.id_photo_front_name);
-			entity.img_selfie = "kyc/images/new_customer/".concat(results.id_photo_selfie_name);
+			
+			entity.img_front = "kyc/images/new_customer/".concat(results[0].id_photo_front_name);
+			entity.img_selfie = "kyc/images/new_customer/".concat(results[0].id_photo_selfie_name);
+			
 			uploadSelfie(entity);
 		}else
 		{
@@ -324,6 +326,7 @@ function querySix(entity)
 
 function uploadSelfie(entity) //untested
 {
+
 	if(entity.img_selfie == ''){}
 	else
 	{
@@ -336,19 +339,20 @@ function uploadSelfie(entity) //untested
 				"Content-Type":"multipart/form-data",
 				"WEB2PY-USER-TOKEN":"842fab80-3201-46e6-b9fb-ce3289f4a9cf"
 			},
-			multipart:
+			formData:
 			{
-				'file': fs.createReadStream(entity.img_selfie),
-				'cust_rfr_id':entity.user_id,
-				'document_type':'SELFIE'
+				file: fs.createReadStream('kyc/images/new_customer/'.concat(entity.img_selfie)),
+				cust_rfr_id:entity.user_id,
+				document_type:'SELFIE'
 			}
 
 		};
 		request.post(options,function(error,response,body)
 		{
+			
 			if(error)
 			{
-				console.log("Submission Error: ".concat(error);
+				console.log("Submission Error: ".concat(error));
 			}else
 			{
 				if(!error && response.statusCode == 200)
@@ -358,7 +362,7 @@ function uploadSelfie(entity) //untested
 					querySeven(entity);
 				}
 			}	
-		}
+		});
 	}
 }
 
@@ -376,17 +380,17 @@ function querySeven(entity)
 			{
 				connection.end();
 				uploadPassport(entity);
-			}
+			});
 			
 		}else
 		{
 			connection = createSQL();
-			connection.query("INSERT INTO IMAGE_DOCUMENT_ID(CUST_RFR_ID,SELFIE_NO) VALUES ('".concat(entity.user_id).concat(",'").concat(entity.selfie_id).concat("'")
+			connection.query("INSERT INTO IMAGE_DOCUMENT_ID(CUST_RFR_ID,SELFIE_NO) VALUES ('".concat(entity.user_id).concat(",'").concat(entity.selfie_id).concat("'"),
 			function(error,results,fields)
 			{
 				connection.end();
 				uploadPassport(entity);
-			}
+			});
 		}
 			
 	});
@@ -407,11 +411,11 @@ function uploadPassport(entity)
 				"Content-Type":"multipart/form-data",
 				"WEB2PY-USER-TOKEN":"842fab80-3201-46e6-b9fb-ce3289f4a9cf"
 			},
-			multipart:
+			formData:
 			{
-				'file': fs.createReadStream(entity.img_front),
-				'cust_rfr_id':entity.user_id,
-				'document_type':'PASSPORT'
+				file: fs.createReadStream('kyc/images/new_customer/'.concat(entity.img_front)),
+				cust_rfr_id:entity.user_id,
+				document_type:'PASSPORT'
 			}
 
 		};
@@ -419,7 +423,7 @@ function uploadPassport(entity)
 		{
 			if(error)
 			{
-				console.log("Submission Error: ".concat(error);
+				console.log("Submission Error: ".concat(error));
 			}else
 			{
 				if(!error && response.statusCode == 200){
@@ -428,7 +432,7 @@ function uploadPassport(entity)
 					queryEight(entity);
 				}
 			}	
-		}
+		});
 	}
 		
 }
@@ -443,31 +447,43 @@ function queryEight(entity)
 		if(results.length>0)
 		{
 			connection = createSQL();
-			connection.query("UPDATE IMAGE_DOCUMENT_ID SET id_no = '".concat(entity.passport_id).concat("' WHERE CUST_RFR_ID = '".concat(entity.user_id).concat("'");
-			console.log('images submitted');
-			faceComparison(entity);
+			connection.query("UPDATE IMAGE_DOCUMENT_ID SET id_no = '".concat(entity.passport_id).concat("' WHERE CUST_RFR_ID = '").concat(entity.user_id).concat("'")
+			,function(error,results,fields)
+			{
+				connection.end();
+				if(error)throw error;
+				console.log('images submitted');
+				faceComparison(entity);
+			});
 			
 		}else
 		{
 			connection = createSQL();
-			connection.query("INSERT INTO IMAGE_DOCUMENT_ID(CUST_RFR_ID,ID_NO) VALUES ('".concat(entity.user_id).concat("','").concat(entity.passport_id).concat("')");
-			console.log('images submitted');
-			faceComparison(entity);
+			connection.query("INSERT INTO IMAGE_DOCUMENT_ID(CUST_RFR_ID,ID_NO) VALUES ('".concat(entity.user_id).concat("','").concat(entity.passport_id).concat("')"),function(error,results,fields)
+			{
+				connection.end();
+				if(error)throw error;
+				console.log('images submitted');
+				faceComparison(entity);			
+			});
+			
 		}
-	}
+	});
 }
 
 
 function faceComparison(entity)
 {
 	var connection = createSQL();
-	connection.query("SELECT id_no,SELFIE_NO FROM IMAGE_DOCUMENT_ID where CUST_RFR_ID = '".concat(entity.user_id).concat("'"),function(error,results,fields)
+	connection.query("SELECT id_no,selfie_no FROM IMAGE_DOCUMENT_ID where CUST_RFR_ID = '".concat(entity.user_id).concat("'"),function(error,results,fields)
 	{
 		connection.end();
 		if(error)throw error;
 		if(results.length > 0)
 		{
+			
 			var request = require('request');
+					console.log(entity.user_id);
 			var options = 
 			{	
 				url : "https://p4.cynopsis.co/artemis_nowall/api/individual_face",
@@ -476,20 +492,23 @@ function faceComparison(entity)
 					"Content-Type":"multipart/form-data",
 					"WEB2PY-USER-TOKEN":"842fab80-3201-46e6-b9fb-ce3289f4a9cf"
 				},
-				multipart:
+				formData:
 				{
-					'cust_rfr_id': entity.user_id,
-					'source_doc_id':results.id_no,
-					'target_doc_id':results.img_selfie_no
+					cust_rfr_id: entity.user_id,
+					source_doc_id:results[0].id_no,
+					target_doc_id:results[0].selfie_no
 				}
 
 			};
 			
 			request.post(options,function(error,response,body)
 			{
+				console.log("STATUS CODE "+ response.statusCode);
+				console.log("BODY "+body);
+				
 				if(error)
 				{
-					console.log("Submission Error: ".concat(error);
+					console.log("Submission Error: ".concat(error));
 				}else
 				{
 					if(!error && response.statusCode == 200)
@@ -498,7 +517,7 @@ function faceComparison(entity)
 						indivReport(entity);
 					}
 				}	
-			}
+			});
 		}
 	});
 	
@@ -515,16 +534,18 @@ function indivReport(entity)
 			"Content-Type":"multipart/form-data",
 			"WEB2PY-USER-TOKEN":"842fab80-3201-46e6-b9fb-ce3289f4a9cf"
 		},
-		multipart:
+		formData:
 		{
-			'cust_rfr_id':entity.user_id
+			cust_rfr_id:entity.user_id
 		}
 	}
 	request.post(options,function(error,response,body)
 	{
+		console.log(response.statusCode);
+		
 		if(error)
 		{
-			console.log("Submission Error: ".concat(error);
+			console.log("Submission Error: ".concat(error));
 		}else
 		{
 			if(!error && response.statusCode == 200)
@@ -538,23 +559,25 @@ function indivReport(entity)
 					{
 						connection.end();
 						if(error)throw error;
-						if(result_status.length>0)
+						if(results.length>0)
 						{
 							connection = createSQL();
-							connection.query("UPDATE kyc_status SET status = '".concat(approval_status).concat("',send_status = 'no',processing_status = 'yes' where user_id=").concat(entity.user_id).concat("'"),
+							connection.query("UPDATE kyc_status SET status = '".concat(json_final.approval_status).concat("',send_status = 'no',processing_status = 'yes' where user_id='").concat(entity.user_id).concat("'"),
 							function(error,results,fields)
 							{
 								connection.end();
 								if(error)throw error;
-							}
+								console.log("Done");
+							});
 								
 						}else
 						{
 							connection = createSQL();
-							connection.query("INSERT INTO kyc_status(user_id,status,send_status,processing_status) VALUES ('".concat(entity.user_id).concat("','").concat(json_final.approval_status).concat("','no','yes')",function(error,results,fields)
+							connection.query("INSERT INTO kyc_status(user_id,status,send_status,processing_status) VALUES ('".concat(entity.user_id).concat("','").concat(json_final.approval_status).concat("','no','yes')"),function(error,results,fields)
 							{
 								connection.end();
 								if(error)throw error;
+								console.log("Done");
 							});
 						}
 					});
@@ -562,8 +585,7 @@ function indivReport(entity)
 			}
 					
 		}			
-	}
+	});
 }
-
 
 queryOne();
